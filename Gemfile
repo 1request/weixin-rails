@@ -27,7 +27,8 @@ gem 'turbolinks'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder', '~> 1.2'
 
-gem "wechat-rails", git:"https://github.com/skinnyworm/wechat-rails"
+#gem "wechat-rails", git:"https://github.com/skinnyworm/wechat-rails"
+gem 'weixin_rails_middleware'
 
 group :doc do
   # bundle exec rake doc:rails generates the API under doc/api.
