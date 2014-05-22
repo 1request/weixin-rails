@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-  before_action :set_user, only: [:show, :edit, :update, :destroy]
+  before_action :set_user, only: [:show, :edit, :update, :destroy, :text]
 
   # GET /users
   # GET /users.json
@@ -61,6 +61,15 @@ class UsersController < ApplicationController
     end
   end
 
+  def text
+    client ||= WeixinAuthorize::Client.new("wxe2e163d3337f28ee", "0ce603e4068fd1f8ee5ef324473d5687")
+    client.send_text_custom(@user.weixin_id, params[:q])
+
+    respond_to do |format|
+      format.html { redirect_to users_path }
+    end
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_user
@@ -69,6 +78,6 @@ class UsersController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def user_params
-      params.require(:user).permit(:id, :weixin_id)
+      params.require(:user).permit(:id, :weixin_id, :q)
     end
 end

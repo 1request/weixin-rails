@@ -17,6 +17,11 @@ Wechat::Application.routes.draw do
   #   resources :products
   resources :apis
   resources :users
+  resources :users do
+    member do
+      post 'text'
+    end
+  end
 
   # Example resource route with options:
   #   resources :products do

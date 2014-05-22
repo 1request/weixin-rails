@@ -12,7 +12,9 @@ WeixinRailsMiddleware::WeixinController.class_eval do
 
     def response_text_message(options={})
       reply_text_message("Your Message: #{@keyword}")
-      User.create(:weixin_id => @weixin_message.FromUserName)
+
+      user = User.where(:weixin_id => @weixin_message.FromUserName)
+      User.create(:weixin_id => @weixin_message.FromUserName) unless user
     end
 
     # <Location_X>23.134521</Location_X>
