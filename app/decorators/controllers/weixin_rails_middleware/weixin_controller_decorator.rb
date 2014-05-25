@@ -5,7 +5,7 @@
 WeixinRailsMiddleware::WeixinController.class_eval do
 
   def reply
-    user = User.where(:weixin_id => @weixin_message.FromUserName)
+    user = User.where(:weixin_id => @weixin_message.FromUserName).first
     User.create(:weixin_id => @weixin_message.FromUserName) unless user
 
     render xml: send("response_#{@weixin_message.MsgType}_message", {})
