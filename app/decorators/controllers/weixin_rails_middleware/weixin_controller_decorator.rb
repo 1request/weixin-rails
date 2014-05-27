@@ -5,8 +5,10 @@
 WeixinRailsMiddleware::WeixinController.class_eval do
 
   def reply
-    user = User.where(:weixin_id => @weixin_message.FromUserName).first
-    User.create(:weixin_id => @weixin_message.FromUserName) unless user
+    customer = Customer.where(:fromUser => @weixin_message.FromUserName).first
+    Customer.create(:fromUser => @weixin_message.FromUserName, :name => @weixin_message.FromUserName) unless customer
+
+    Message.create(:customer_id => '59JzEgZSbukBhR32c', :message_type => 'customer', :message => @weixin_message.Content)
 
     render xml: send("response_#{@weixin_message.MsgType}_message", {})
   end
@@ -14,7 +16,7 @@ WeixinRailsMiddleware::WeixinController.class_eval do
   private
 
     def response_text_message(options={})
-      reply_text_message("Your Message: #{@keyword}")
+      reply_text_message("")
     end
 
     # <Location_X>23.134521</Location_X>

@@ -63,7 +63,7 @@ class UsersController < ApplicationController
 
   def text
     client ||= WeixinAuthorize::Client.new("wxe2e163d3337f28ee", "0ce603e4068fd1f8ee5ef324473d5687")
-    client.send_text_custom(@user.weixin_id, params[:q])
+    client.send_text_custom('oPPmst_BGsqMrhi-8kV56kdQ7E40', params[:q])
 
     respond_to do |format|
       format.html { redirect_to users_path }
