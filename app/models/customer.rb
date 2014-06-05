@@ -13,7 +13,7 @@ class Customer
   field :country, type: String
   field :subscribe, type: Boolean
   field :subscribe_time, type: Integer
-  field :count, type: Integer
+  field :count, type: Integer, default: 0
 
   def user_info=(user_info)
     self[:name] = user_info['nickname']
