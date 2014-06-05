@@ -5,18 +5,15 @@
 WeixinRailsMiddleware::WeixinController.class_eval do
 
   def reply
-    customer = Customer.where(:fromUser => @weixin_message.FromUserName).first
-    unless customer
+    @customer = Customer.where(:fromUser => @weixin_message.FromUserName).first
+    unless @customer
       id = BSON::ObjectId.new
-      customer = Customer.create(_id: id.to_s, fromUser: @weixin_message.FromUserName) 
+      @customer = Customer.create(_id: id.to_s, fromUser: @weixin_message.FromUserName) 
+      
       client ||= WeixinAuthorize::Client.new("wxe2e163d3337f28ee", "0ce603e4068fd1f8ee5ef324473d5687")
-      customer.user_info = client.user(@weixin_message.FromUserName).result
-      customer.save
+      @customer.user_info = client.user(@weixin_message.FromUserName).result
+      @customer.save
     end
-
-    Message.create(:customer_id => customer._id, :message_type => 'customer', :message => @weixin_message.Content)
-    customer.count = customer.count + 1
-    customer.save
 
     render xml: send("response_#{@weixin_message.MsgType}_message", {})
   end
@@ -24,6 +21,10 @@ WeixinRailsMiddleware::WeixinController.class_eval do
   private
 
     def response_text_message(options={})
+      Message.create(:customer_id => @customer._id, :message_type => 'customer', :message => @weixin_message.Content)
+      @customer.count = @customer.count + 1
+      @customer.save
+
       reply_text_message("")
     end
 
