@@ -7,7 +7,8 @@ WeixinRailsMiddleware::WeixinController.class_eval do
   def reply
     customer = Customer.where(:fromUser => @weixin_message.FromUserName).first
     unless customer
-      customer = Customer.create(:fromUser => @weixin_message.FromUserName) 
+      id = BSON::ObjectId.new
+      customer = Customer.create(_id: id.to_s, fromUser: @weixin_message.FromUserName) 
       client ||= WeixinAuthorize::Client.new("wxe2e163d3337f28ee", "0ce603e4068fd1f8ee5ef324473d5687")
       customer.user_info = client.user(@weixin_message.FromUserName).result
       customer.save

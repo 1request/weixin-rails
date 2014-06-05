@@ -6,7 +6,10 @@ class KfController < ApplicationController
   def index
     @client.followers.result['data']['openid'].each do |follower|
       customer = Customer.where(:fromUser => follower).first
-      customer = Customer.create(:fromUser => follower) unless customer
+      unless customer
+        id = BSON::ObjectId.new
+        customer = Customer.create(_id: id.to_s, fromUser: follower)
+      end
 
       customer.user_info = @client.user(follower).result
       customer.save
