@@ -14,7 +14,9 @@ WeixinRailsMiddleware::WeixinController.class_eval do
       customer.save
     end
 
-    Message.create(:customer_id => '59JzEgZSbukBhR32c', :message_type => 'customer', :message => @weixin_message.Content)
+    Message.create(:customer_id => customer._id, :message_type => 'customer', :message => @weixin_message.Content)
+    customer.count = customer.count + 1
+    customer.save
 
     render xml: send("response_#{@weixin_message.MsgType}_message", {})
   end
