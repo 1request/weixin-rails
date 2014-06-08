@@ -5,4 +5,8 @@ class Message
   field :customer_id, type: String
   field :message_type, type: String
   field :message, type: String
+  field :content_type, type: String
+  field :weixin_msg_id, type: String
+
+  mount_uploader :media, MediaUploader
 end

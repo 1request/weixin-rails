@@ -10,7 +10,6 @@ WeixinRailsMiddleware::WeixinController.class_eval do
       id = BSON::ObjectId.new
       @customer = Customer.create(_id: id.to_s, fromUser: @weixin_message.FromUserName) 
       
-      client ||= WeixinAuthorize::Client.new("wxe2e163d3337f28ee", "0ce603e4068fd1f8ee5ef324473d5687")
       @customer.user_info = client.user(@weixin_message.FromUserName).result
       @customer.save
     end
@@ -19,11 +18,40 @@ WeixinRailsMiddleware::WeixinController.class_eval do
   end
 
   private
+    def client
+      @client ||= WeixinAuthorize::Client.new("wxe2e163d3337f28ee", "0ce603e4068fd1f8ee5ef324473d5687")
+    end
+
+    def create_message(content_type=nil, remote_media_url=nil)
+      message = Message.where(:weixin_msg_id => @weixin_message.MsgId).first
+      unless message
+        remote_media_url ||= client.download_media_url(@weixin_message.MediaId)
+
+        message = Message.create(
+          :customer_id => @customer._id, 
+          :message_type => "customer", 
+          :remote_media_url => remote_media_url,
+          :content_type => content_type,
+          :weixin_msg_id => @weixin_message.MsgId)
+        message.message = message.media_url
+        message.save
+        @customer.count = @customer.count + 1
+        @customer.save
+      end
+    end
 
     def response_text_message(options={})
-      Message.create(:customer_id => @customer._id, :message_type => 'customer', :message => @weixin_message.Content)
-      @customer.count = @customer.count + 1
-      @customer.save
+      message = Message.where(:weixin_msg_id => @weixin_message.MsgId).first
+      unless message
+        Message.create(
+          :customer_id => @customer._id, 
+          :message_type => 'customer', 
+          :message => @weixin_message.Content,
+          :content_type => 'text',
+          :weixin_msg_id => @weixin_message.MsgId)
+        @customer.count = @customer.count + 1
+        @customer.save
+      end
 
       reply_text_message("")
     end
@@ -43,9 +71,10 @@ WeixinRailsMiddleware::WeixinController.class_eval do
     # <PicUrl><![CDATA[this is a url]]></PicUrl>
     # <MediaId><![CDATA[media_id]]></MediaId>
     def response_image_message(options={})
-      @media_id = @weixin_message.MediaId # 可以调用多媒体文件下载接口拉取数据。
-      @pic_url  = @weixin_message.PicUrl  # 也可以直接通过此链接下载图片, 建议使用carrierwave.
-      reply_image_message(generate_image(@media_id))
+      #@media_id = @weixin_message.MediaId # 可以调用多媒体文件下载接口拉取数据。
+      #reply_image_message(generate_image(@media_id))
+      create_message("image", @weixin_message.PicUrl)
+      reply_text_message("")
     end
 
     # <Title><![CDATA[公众平台官网链接]]></Title>
@@ -61,20 +90,25 @@ WeixinRailsMiddleware::WeixinController.class_eval do
     # <MediaId><![CDATA[media_id]]></MediaId>
     # <Format><![CDATA[Format]]></Format>
     def response_voice_message(options={})
-      @media_id = @weixin_message.MediaId # 可以调用多媒体文件下载接口拉取数据。
-      @format   = @weixin_message.Format
+      #@media_id = @weixin_message.MediaId # 可以调用多媒体文件下载接口拉取数据。
+      #@format   = @weixin_message.Format
+
       # 如果开启了语音翻译功能，@keyword则为翻译的结果
       # reply_text_message("回复语音信息: #{@keyword}")
-      reply_voice_message(generate_voice(@media_id))
+      #reply_voice_message(generate_voice(@media_id))
+      create_message("voice")
+      reply_text_message("")
     end
 
     # <MediaId><![CDATA[media_id]]></MediaId>
     # <ThumbMediaId><![CDATA[thumb_media_id]]></ThumbMediaId>
     def response_video_message(options={})
-      @media_id = @weixin_message.MediaId # 可以调用多媒体文件下载接口拉取数据。
+      #@media_id = @weixin_message.MediaId # 可以调用多媒体文件下载接口拉取数据。
       # 视频消息缩略图的媒体id，可以调用多媒体文件下载接口拉取数据。
-      @thumb_media_id = @weixin_message.ThumbMediaId
-      reply_text_message("回复视频信息")
+      #@thumb_media_id = @weixin_message.ThumbMediaId
+      #reply_text_message("回复视频信息")
+      create_message("video")
+      reply_text_message("")
     end
 
     def response_event_message(options={})

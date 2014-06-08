@@ -30,6 +30,10 @@ gem 'jbuilder', '~> 1.2'
 gem 'weixin_rails_middleware'
 gem 'weixin_authorize'
 
+gem 'carrierwave'
+gem 'carrierwave-mongoid', :require => 'carrierwave/mongoid'
+gem 'mongoid-grid_fs', github: 'ahoward/mongoid-grid_fs'
+
 group :doc do
   # bundle exec rake doc:rails generates the API under doc/api.
   gem 'sdoc', require: false
