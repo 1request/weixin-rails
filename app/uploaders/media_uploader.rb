@@ -52,11 +52,16 @@ class MediaUploader < CarrierWave::Uploader::Base
     video = MiniExiftool.new(@file.path)
     orientation = video.rotation
 
-    if orientation == 90
-      # rotate video
-      Rails.logger.debug "portrait video"
+    case orientation 
+    when 90
       aspect_ratio = video.imageheight.to_f / video.imagewidth.to_f
       encode_video(:mp4, custom: "-vf transpose=1", aspect: aspect_ratio)
+    when 180
+      aspect_ratio = video.imagewidth.to_f / video.imageheight.to_f
+      encode_video(:mp4, custom: "-vf transpose=2,transpose=2", aspect: aspect_ratio)
+    when 270
+      aspect_ratio = video.imageheight.to_f / video.imagewidth.to_f
+      encode_video(:mp4, custom: "-vf transpose=2", aspect: aspect_ratio)
     else
       aspect_ratio = video.imagewidth.to_f / video.imageheight.to_f
       encode_video(:mp4, resolution: :same, aspect: aspect_ratio)
