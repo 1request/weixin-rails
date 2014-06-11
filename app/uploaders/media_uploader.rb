@@ -1,4 +1,5 @@
 # encoding: utf-8
+require 'mini_exiftool'
 
 class MediaUploader < CarrierWave::Uploader::Base
   include CarrierWave::MiniMagick
@@ -29,16 +30,40 @@ class MediaUploader < CarrierWave::Uploader::Base
   #   "something.jpg" if original_filename
   # end
 
-  process :fix_exif_rotation, :if => :image? 
+  process :rotate_image, :if => :image? 
 
   def image?(newfile)
     %w{jpeg png jpg gif bmp}.include?(newfile.extension.downcase)
   end
 
-  def fix_exif_rotation #this is my attempted solution
+  def rotate_image #this is my attempted solution
     manipulate! do |img|
       img.tap(&:auto_orient)
     end
+  end
+
+  process :rotate_video, :if => :video?
+
+  def video?(newfile)
+    %w{mp4}.include?(newfile.extension.downcase)
+  end
+
+  def rotate_video
+    video = MiniExiftool.new(@file.path)
+    orientation = video.rotation
+
+    if orientation == 90
+      # rotate video
+      Rails.logger.debug "portrait video"
+      aspect_ratio = video.imageheight.to_f / video.imagewidth.to_f
+      encode_video(:mp4, custom: "-vf transpose=1", aspect: aspect_ratio)
+    else
+      aspect_ratio = video.imagewidth.to_f / video.imageheight.to_f
+      encode_video(:mp4, resolution: :same, aspect: aspect_ratio)
+    end
+
+    instance_variable_set(:@content_type, "video/mp4")
+    :set_content_type_mp4
   end
 
   process :set_content_type, :if => :audio? 

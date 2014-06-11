@@ -36,6 +36,7 @@ gem 'mongoid-grid_fs', github: 'ahoward/mongoid-grid_fs'
 # for converting audio
 gem 'streamio-ffmpeg'
 gem 'carrierwave-video'
+gem 'mini_exiftool'
 
 group :doc do
   # bundle exec rake doc:rails generates the API under doc/api.
