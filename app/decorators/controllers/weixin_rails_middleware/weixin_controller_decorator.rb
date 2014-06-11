@@ -22,10 +22,10 @@ WeixinRailsMiddleware::WeixinController.class_eval do
       @client ||= WeixinAuthorize::Client.new("wxe2e163d3337f28ee", "0ce603e4068fd1f8ee5ef324473d5687")
     end
 
-    def create_message(content_type=nil, remote_media_url=nil)
+    def create_message(content_type=nil, options={})
       message = Message.where(:weixin_msg_id => @weixin_message.MsgId).first
       unless message
-        remote_media_url ||= client.download_media_url(@weixin_message.MediaId)
+        remote_media_url = options[:remote_media_url] || client.download_media_url(@weixin_message.MediaId)
 
         message = Message.create(
           :customer_id => @customer._id, 
@@ -33,11 +33,12 @@ WeixinRailsMiddleware::WeixinController.class_eval do
           :remote_media_url => remote_media_url,
           :content_type => content_type,
           :weixin_msg_id => @weixin_message.MsgId)
-        message.message = message.media_url
+        message.message = options.has_key?(:version) ? message.media_url(options[:version]) : message.media_url
         message.save
         @customer.count = @customer.count + 1
         @customer.save
       end
+      return message
     end
 
     def response_text_message(options={})
@@ -73,7 +74,7 @@ WeixinRailsMiddleware::WeixinController.class_eval do
     def response_image_message(options={})
       #@media_id = @weixin_message.MediaId # 可以调用多媒体文件下载接口拉取数据。
       #reply_image_message(generate_image(@media_id))
-      create_message("image", @weixin_message.PicUrl)
+      create_message("image", {:remote_media_url => @weixin_message.PicUrl})
       reply_text_message("")
     end
 
@@ -96,7 +97,7 @@ WeixinRailsMiddleware::WeixinController.class_eval do
       # 如果开启了语音翻译功能，@keyword则为翻译的结果
       # reply_text_message("回复语音信息: #{@keyword}")
       #reply_voice_message(generate_voice(@media_id))
-      create_message("voice")
+      create_message("voice", {:version => :mp3})
       reply_text_message("")
     end
 
