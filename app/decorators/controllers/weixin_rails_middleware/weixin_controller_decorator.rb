@@ -66,7 +66,20 @@ WeixinRailsMiddleware::WeixinController.class_eval do
       @ly    = @weixin_message.Location_Y
       @scale = @weixin_message.Scale
       @label = @weixin_message.Label
-      reply_text_message("Your Location: #{@lx}, #{@ly}, #{@scale}, #{@label}")
+
+      message = Message.where(:weixin_msg_id => @weixin_message.MsgId).first
+      unless message
+        Message.create(
+          :customer_id => @customer._id, 
+          :message_type => 'customer', 
+          :message => "#{@lx}, #{@ly}",
+          :content_type => 'location',
+          :weixin_msg_id => @weixin_message.MsgId)
+        @customer.count = @customer.count + 1
+        @customer.save
+      end
+
+      reply_text_message("")
     end
 
     # <PicUrl><![CDATA[this is a url]]></PicUrl>
