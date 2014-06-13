@@ -38,6 +38,10 @@ gem 'streamio-ffmpeg'
 gem 'carrierwave-video'
 gem 'mini_exiftool'
 
+# for deployment
+gem "rvm-capistrano"
+gem 'thin'
+
 group :doc do
   # bundle exec rake doc:rails generates the API under doc/api.
   gem 'sdoc', require: false
@@ -45,6 +49,10 @@ end
 
 group :development do
   gem 'pry'
+  gem "capistrano", "2.15.4"
+  gem "capistrano-ext"
+  gem 'capistrano-unicorn', :require => false
+  gem "cape"
 end
 
 # Use ActiveModel has_secure_password
