@@ -5,7 +5,6 @@ default_environment["PATH"] = "/opt/ruby/bin:/usr/local/bin:/usr/bin:/bin"
 
 set :application, "weixin-rails"
 set :repository,  "git@github.com:1request/weixin-rails.git"
-set :deploy_to, "/home/ubuntu/weixin-rails"
 
 set :branch, "master"
 set :scm, :git
@@ -36,7 +35,7 @@ namespace :deploy do
   desc "Restart thin process"
   task :restart, :roles => [:web], :except => { :no_release => true } do
     run "touch #{current_path}/tmp/restart.txt"
-    run "cd #{deploy_to}/current; bundle exec thin start -C ~/discourse/thin.yml"
+    run "cd #{deploy_to}/current; bundle exec thin start -C ./thin.yml"
   end
 end
 
