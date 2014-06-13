@@ -1,6 +1,4 @@
 Wechat::Application.routes.draw do
-  resources :weixin_images
-
   mount WeixinRailsMiddleware::Engine, at: "/"
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
@@ -21,15 +19,7 @@ Wechat::Application.routes.draw do
   resources :users
   resources :users do
     member do
-      post 'info'
       post 'text'
-    end
-  end
-
-  resources :weixin_images
-  resources :weixin_images do
-    member do
-      post 'send_image'
     end
   end
 
