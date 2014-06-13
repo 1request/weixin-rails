@@ -1,2 +1,5 @@
-class User < ActiveRecord::Base
+class User
+  include Mongoid::Document
+
+  field :weixin_id
 end

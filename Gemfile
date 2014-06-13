@@ -4,7 +4,7 @@ source 'https://rubygems.org'
 gem 'rails', '4.0.3'
 
 # Use sqlite3 as the database for Active Record
-gem 'sqlite3'
+gem 'mongoid', '4.0.0.beta1', github: 'mongoid/mongoid'
 
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 4.0.0'
@@ -29,6 +29,14 @@ gem 'jbuilder', '~> 1.2'
 
 gem 'weixin_rails_middleware'
 gem 'weixin_authorize'
+
+gem 'carrierwave'
+gem 'carrierwave-mongoid', :require => 'carrierwave/mongoid'
+gem 'mongoid-grid_fs', github: 'ahoward/mongoid-grid_fs'
+# for converting audio
+gem 'streamio-ffmpeg'
+gem 'carrierwave-video'
+gem 'mini_exiftool'
 
 group :doc do
   # bundle exec rake doc:rails generates the API under doc/api.
