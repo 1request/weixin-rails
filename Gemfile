@@ -40,6 +40,7 @@ gem 'mini_exiftool'
 
 # for deployment
 gem "rvm-capistrano"
+gem 'thin'
 
 group :doc do
   # bundle exec rake doc:rails generates the API under doc/api.
