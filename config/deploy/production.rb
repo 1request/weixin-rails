@@ -35,7 +35,7 @@ namespace :deploy do
   desc "Restart thin process"
   task :restart, :roles => [:web], :except => { :no_release => true } do
     run "touch #{current_path}/tmp/restart.txt"
-    run "cd #{deploy_to}/current; bundle exec thin start -C ./thin.yml"
+    run "cd #{deploy_to}/current; bundle exec thin restart -C ./thin.yml"
   end
 end
 
