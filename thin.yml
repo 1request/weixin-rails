@@ -1,14 +1,14 @@
 # ~/wealthy/thin.yml
 
 ---
-chdir: /home/weixin-rails/current
+chdir: /home/ubuntu/weixin-rails/current
 environment: production
 address: 0.0.0.0
 port: 3000
 timeout: 30
-log: /home/weixin-rails/current/log/thin.log
-pid: /home/weixin-rails/current/tmp/pids/thin.pid
-socket: /home/weixin-rails/current/tmp/pids/thin.sock
+log: /home/ubuntu/weixin-rails/current/log/thin.log
+pid: /home/ubuntu/weixin-rails/current/tmp/pids/thin.pid
+socket: /home/ubuntu/weixin-rails/current/tmp/pids/thin.sock
 max_conns: 1024
 max_persistent_conns: 100
 require: []
