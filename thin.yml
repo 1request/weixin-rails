@@ -1,4 +1,4 @@
-# ~/wealthy/thin.yml
+# ~/weixin-rails/thin.yml
 
 ---
 chdir: /home/ubuntu/weixin-rails/current
