@@ -12,7 +12,7 @@ set :scm, :git
 set :user, "ubuntu"
 set :group, "ubuntu"
 
-set :deploy_to, "/opt/#{application}/app"
+set :deploy_to, "/home/ubuntu/#{application}"
 set :runner, "ubuntu"
 set :deploy_via, :remote_cache
 set :git_shallow_clone, 1
@@ -20,9 +20,9 @@ set :git_shallow_clone, 1
 set :use_sudo, false
 set :rvm_ruby_string, '2.1.1'
 
-role :web, "ec2-54-226-127-10.compute-1.amazonaws.com"                          # Your HTTP server, Apache/etc
-role :app, "ec2-54-226-127-10.compute-1.amazonaws.com"                         # This may be the same as your `Web` server
-role :db,  "ec2-54-226-127-10.compute-1.amazonaws.com"   , :primary => true # This is where Rails migrations will run
+role :web, "54.211.217.177"                          # Your HTTP server, Apache/etc
+role :app, "54.211.217.177"                         # This may be the same as your `Web` server
+role :db,  "54.211.217.177"   , :primary => true # This is where Rails migrations will run
 
 set :deploy_env, "production"
 set :rails_env, "production"
@@ -46,6 +46,7 @@ namespace :my_tasks do
     run "mkdir -p #{deploy_to}/shared/pids"
 
     symlink_hash = {
+      "#{shared_path}/uploads"   => "#{release_path}/public/uploads",
       "#{shared_path}/config/database.yml"   => "#{release_path}/config/database.yml",
     }
 
