@@ -1,0 +1,22 @@
+<table>
+  <thead>
+    <tr>
+      <th>WeiXin Id</th>
+      <th width="8%">Created at</th>
+      <th>Content Type</th>
+      <th>Content</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @messages.each do |msg| %>
+      <tr>
+        <td><%= msg._id %></td>
+        <td><%= msg.created_at.strftime("%Y-%m-%d") %></td>
+        <td><%= msg.content_type %></td>
+        <td><%= msg.message %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
