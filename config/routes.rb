@@ -24,6 +24,7 @@ Wechat::Application.routes.draw do
   end
 
   resources :kf
+  resources :accounts
 
   # Example resource route with options:
   #   resources :products do
