@@ -4,7 +4,7 @@ class AccountsController < ApplicationController
 
   # POST /accounts
   def create
-    account = Account.where({weixin_id: params[:weixin_id]}).first
+    account = Account.where({gh_id: params[:gh_id]}).first
     if account
       account.update(account_params)
     else
@@ -21,6 +21,6 @@ class AccountsController < ApplicationController
     end
 
     def account_params
-      params.permit(:weixin_id, :name, :app_id, :app_secret)
+      params.permit(:name, :gh_id, :weixin_id, :app_id, :app_secret)
     end
 end
