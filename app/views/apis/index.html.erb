@@ -1,2 +1,19 @@
-URL：<%= weixin_engine.weixin_server_url(@weixin_secret_key) %><br/>
-Token：<%= @weixin_token %>
+<table>
+  <thead>
+    <tr>
+      <th>Account</th>
+      <th>URL</th>
+      <th>Token</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @accounts.each do |account| %>
+      <tr>
+        <td><%= account.name %>(<%= account.weixin_id%>)</td>
+        <td><%= weixin_engine.weixin_server_url(account.weixin_secret_key) %></td>
+        <td><%= account.weixin_token %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
