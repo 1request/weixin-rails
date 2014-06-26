@@ -217,6 +217,7 @@ DEPENDENCIES
   jbuilder (~> 1.2)
   jquery-rails
   mini_exiftool
+  mini_magick
   mongoid (= 4.0.0.beta1)!
   mongoid-grid_fs!
   pry

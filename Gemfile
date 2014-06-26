@@ -30,6 +30,7 @@ gem 'jbuilder', '~> 1.2'
 gem 'weixin_rails_middleware'
 gem 'weixin_authorize'
 
+gem "mini_magick"
 gem 'carrierwave'
 gem 'carrierwave-mongoid', :require => 'carrierwave/mongoid'
 gem 'mongoid-grid_fs', github: 'ahoward/mongoid-grid_fs'

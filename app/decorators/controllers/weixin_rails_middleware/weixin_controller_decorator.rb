@@ -5,7 +5,8 @@
 WeixinRailsMiddleware::WeixinController.class_eval do
 
   def reply
-    @customer = Customer.where(:fromUser => @weixin_message.FromUserName).first
+    @account = Account.where(gh_id: @weixin_message.ToUserName).first
+    @customer = Customer.where(fromUser: @weixin_message.FromUserName).first
     unless @customer
       id = BSON::ObjectId.new
       @customer = Customer.create(_id: id.to_s, fromUser: @weixin_message.FromUserName) 
@@ -19,20 +20,31 @@ WeixinRailsMiddleware::WeixinController.class_eval do
 
   private
     def client
-      @client ||= WeixinAuthorize::Client.new("wxe2e163d3337f28ee", "0ce603e4068fd1f8ee5ef324473d5687")
+      @clients ||= {}
+      @clients[@weixin_message.ToUserName] ||= connect_client
+    end
+
+    def connect_client
+      WeixinAuthorize::Client.new(@account.app_id, @account.app_secret)
     end
 
     def create_message(content_type=nil, options={})
       message = Message.where(:weixin_msg_id => @weixin_message.MsgId).first
       unless message
-        remote_media_url = options[:remote_media_url] || client.download_media_url(@weixin_message.MediaId)
-
+        # Create message
         message = Message.create(
+          :account_id => @account._id,
           :customer_id => @customer._id, 
           :message_type => "customer", 
-          :remote_media_url => remote_media_url,
           :content_type => content_type,
           :weixin_msg_id => @weixin_message.MsgId)
+
+        # Download media from weixin
+        remote_media_url = options[:remote_media_url] || client.download_media_url(@weixin_message.MediaId)
+        message.remote_media_url = remote_media_url
+        message.save
+
+        # Set media URL
         message.message = options.has_key?(:version) ? message.media_url(options[:version]) : message.media_url
         message.save
         @customer.count = @customer.count + 1
@@ -45,6 +57,7 @@ WeixinRailsMiddleware::WeixinController.class_eval do
       message = Message.where(:weixin_msg_id => @weixin_message.MsgId).first
       unless message
         Message.create(
+          :account_id => @account._id,
           :customer_id => @customer._id, 
           :message_type => 'customer', 
           :message => @weixin_message.Content,
@@ -70,6 +83,7 @@ WeixinRailsMiddleware::WeixinController.class_eval do
       message = Message.where(:weixin_msg_id => @weixin_message.MsgId).first
       unless message
         Message.create(
+          :account_id => @account._id,
           :customer_id => @customer._id, 
           :message_type => 'customer', 
           :message => "#{@lx}, #{@ly}",
