@@ -25,7 +25,7 @@ class KfController < ApplicationController
 
   private
     def set_access_control_headers 
-      headers['Access-Control-Allow-Origin'] = 'http://localhost:4000' 
+      headers['Access-Control-Allow-Origin'] = 'http://kf.xin.io' 
       headers['Access-Control-Request-Method'] = '*' 
     end
 
