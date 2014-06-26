@@ -3,7 +3,7 @@ class Account
   include Mongoid::Timestamps
   include WeixinRailsMiddleware::AutoGenerateWeixinTokenSecretKey
 
-  field :id, type: String
+  field :_id, type: String
   field :name, type: String
   field :app_id, type: String
   field :app_secret, type: String

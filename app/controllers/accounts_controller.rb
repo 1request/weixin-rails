@@ -8,7 +8,12 @@ class AccountsController < ApplicationController
     if account
       account.update(account_params)
     else
-      Account.create(account_params)
+      attrs = account_params
+
+      id = BSON::ObjectId.new
+      attrs[:_id] = id.to_s
+
+      Account.create(attrs)
     end
     
     head :created
