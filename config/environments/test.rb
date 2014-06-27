@@ -33,4 +33,6 @@ Wechat::Application.configure do
 
   # Print deprecation notices to the stderr.
   config.active_support.deprecation = :stderr
+
+  config.meteor_server = 'http://localhost:4000'
 end
