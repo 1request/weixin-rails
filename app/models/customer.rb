@@ -3,6 +3,7 @@ class Customer
   include Mongoid::Timestamps
 
   field :_id, type: String
+  field :account_id, type: String
   field :fromUser, type: String
   field :name, type: String
   field :sex, type: String

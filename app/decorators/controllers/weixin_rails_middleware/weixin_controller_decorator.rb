@@ -6,12 +6,14 @@ WeixinRailsMiddleware::WeixinController.class_eval do
 
   def reply
     @account = Account.where(gh_id: @weixin_message.ToUserName).first
+    @client ||= WeixinAuthorize::Client.new(@account.app_id, @account.app_secret)
+
     @customer = Customer.where(fromUser: @weixin_message.FromUserName).first
     unless @customer
       id = BSON::ObjectId.new
-      @customer = Customer.create(_id: id.to_s, fromUser: @weixin_message.FromUserName) 
+      @customer = Customer.create(_id: id.to_s, account_id: @account._id, fromUser: @weixin_message.FromUserName) 
       
-      @customer.user_info = client.user(@weixin_message.FromUserName).result
+      @customer.user_info = @client.user(@weixin_message.FromUserName).result
       @customer.save
     end
 
@@ -19,15 +21,6 @@ WeixinRailsMiddleware::WeixinController.class_eval do
   end
 
   private
-    def client
-      @clients ||= {}
-      @clients[@weixin_message.ToUserName] ||= connect_client
-    end
-
-    def connect_client
-      WeixinAuthorize::Client.new(@account.app_id, @account.app_secret)
-    end
-
     def create_message(content_type=nil, options={})
       message = Message.where(:weixin_msg_id => @weixin_message.MsgId).first
       unless message
@@ -40,7 +33,7 @@ WeixinRailsMiddleware::WeixinController.class_eval do
           :weixin_msg_id => @weixin_message.MsgId)
 
         # Download media from weixin
-        remote_media_url = options[:remote_media_url] || client.download_media_url(@weixin_message.MediaId)
+        remote_media_url = options[:remote_media_url] || @client.download_media_url(@weixin_message.MediaId)
         message.remote_media_url = remote_media_url
         message.save
 
