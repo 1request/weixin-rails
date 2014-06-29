@@ -26,6 +26,6 @@ class AccountsController < ApplicationController
     end
 
     def account_params
-      params.permit(:name, :gh_id, :weixin_id, :app_id, :app_secret)
+      params.permit(:name, :gh_id, :weixin_id, :app_id, :app_secret, :user_id)
     end
 end

@@ -11,4 +11,5 @@ class Account
   field :weixin_id, type: String
   field :weixin_secret_key, type: String
   field :weixin_token, type: String
+  field :user_id, type: String
 end
