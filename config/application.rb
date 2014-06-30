@@ -9,11 +9,15 @@ Bundler.require(:default, Rails.env)
 
 module Wechat
   class Application < Rails::Application
-        config.to_prepare do
+    config.to_prepare do
       # Load application's model / class decorators
       Dir.glob(File.join(File.dirname(__FILE__), "../app/**/*_decorator*.rb")) do |c|
         Rails.configuration.cache_classes ? require(c) : load(c)
       end
+    end
+
+    config.generators do |g|
+      g.orm :active_record
     end
 
     # Settings in config/environments/* take precedence over those specified here.
