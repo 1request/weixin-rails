@@ -15,6 +15,7 @@ class Customer
   field :subscribe, type: Boolean
   field :subscribe_time, type: Integer
   field :count, type: Integer, default: 0
+  field :last_message_at, type: Time
 
   def user_info=(user_info)
     self[:name] = user_info['nickname']

@@ -41,6 +41,7 @@ WeixinRailsMiddleware::WeixinController.class_eval do
         message.message = options.has_key?(:version) ? message.media_url(options[:version]) : message.media_url
         message.save
         @customer.count = @customer.count + 1
+        @customer.last_message_at = Time.now.utc
         @customer.save
       end
       return message
@@ -57,6 +58,7 @@ WeixinRailsMiddleware::WeixinController.class_eval do
           :content_type => 'text',
           :weixin_msg_id => @weixin_message.MsgId)
         @customer.count = @customer.count + 1
+        @customer.last_message_at = Time.now.utc
         @customer.save
       end
 
@@ -83,6 +85,7 @@ WeixinRailsMiddleware::WeixinController.class_eval do
           :content_type => 'location',
           :weixin_msg_id => @weixin_message.MsgId)
         @customer.count = @customer.count + 1
+        @customer.last_message_at = Time.now.utc
         @customer.save
       end
 
